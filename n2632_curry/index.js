@@ -1,10 +1,31 @@
-var curry = function(fn) {
+var curry1 = function (fn) {
 
     var a = [];
 
-    return function curried (...args) {
+    return function curried(...args) {
 
         a = [...a, ...args]
+
+        if (a.length >= fn.length) {
+            return fn(...a);
+        }
+
+        return curried;
+
+    };
+};
+
+const curry = (fn) => {
+
+    const a = [];
+
+    return curried = (...args) => {
+
+        a.push(...args)
+
+        if (a.length >= fn.length) {
+            return fn(...a);
+        }
 
         return curried;
 
@@ -12,6 +33,9 @@ var curry = function(fn) {
 };
 
 
-function sum(a, b) { return a + b; }
+function sum(a, b) {
+    return a + b;
+}
+
 const csum = curry(sum);
-csum(1)(2) // 3
+console.log(csum(1)(2)) // 3
