@@ -1,29 +1,25 @@
-const timeLimit1 = (fn, t) => {
+const timeLimit = (fn, t) => {
     return async (...args) => {
+        return new Promise(async (resolve, reject) => {
 
+            const timeOut = setTimeout(() => {
+                reject("Time Limit Exceeded");
+            }, t);
 
-        let i = 0;
-
-        const interval = setInterval(async () => {
-
-            if (i > t) {
-                // clearInterval(interval);
-                return Promise.reject("Time Limit Exceeded");
+            try {
+                const res = await fn(...args);
+                clearTimeout(timeOut);
+                resolve(res);
+            } catch (err) {
+                clearTimeout(timeOut);
+                reject(err);
             }
 
-            i++;
-        }, 1)
-
-        const res = await fn(...args)
-
-        // clearInterval(interval);
-
-        return res;
-
+        })
     }
 };
 
-const timeLimit = (fn, t) => {
+const timeLimit1 = (fn, t) => {
     return async (...args) => {
         return new Promise((resolve, reject) => {
 
@@ -52,5 +48,7 @@ const limited1 = timeLimit(async (n) => {
 }, 50);
 limited1(5).then(console.log).catch(console.log)
 
-const limited2 = timeLimit(async () => { throw "Error"; }, 1000);
+const limited2 = timeLimit(async () => {
+    throw "Error";
+}, 1000);
 limited2([]).then(console.log).catch(console.log)
