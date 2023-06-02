@@ -1,8 +1,11 @@
 let promisePool = async (functions, n) => {
 
-    let counter = 0;
+    const next = async (fn) => {
+        await fn();
+        if (functions.length) await next(functions.shift())
+    }
 
-
+    await Promise.all(functions.splice(0, n).map(fn => next(fn)))
 
 };
 
